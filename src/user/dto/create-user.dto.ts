@@ -3,12 +3,12 @@ import { IsEmail, IsNumber, IsOptional, IsString, MinLength } from "class-valida
 export class CreateUserDto {
 
     @IsString({message:"Tiene que ser una cadena"})
-    @MinLength(3)
+    @MinLength(3, {message:'tiene que tener por lo menos una longitud de 3'})
     primerNombre:  string;
 
     @IsOptional()
     @IsString()
-    @MinLength(3)
+    @MinLength(3, {message:'tiene que tener por lo menos una longitud de 3'})
     segundoNombre: string;
 
     @IsString()
@@ -17,7 +17,7 @@ export class CreateUserDto {
     @IsEmail()
     correo:        string;
 
-    @IsNumber({})
+    @IsNumber()
     telefono:      number;
 
 
@@ -25,6 +25,6 @@ export class CreateUserDto {
     username:      string;
     
     @IsString()
-    @MinLength(5)
+    @MinLength(5,{message:'tiene que tener por lo menos una longitud de 5'})
     password:      string;
 }
