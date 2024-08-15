@@ -62,7 +62,7 @@ export class UserService {
    .where({ username })
    .getOne()
 
-    if(!user) throw new NotFoundException(`El usuario con id ${username} no existe`)
+    if(!user) throw new NotFoundException(`Usario o contrasena incorrecta`)
     return user
 
   }

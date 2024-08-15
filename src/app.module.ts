@@ -5,6 +5,7 @@ import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { AccessControlModule } from './access-control/access-control.module';
 
 @Module({
   imports: [
@@ -16,13 +17,14 @@ import { AuthModule } from './auth/auth.module';
       password: process.env.DB_PWD,
       database:process.env.DB_DBNAME,
       ssl: true,
-      synchronize: false,
+      synchronize: true,
       autoLoadEntities: true
       
       
     }),
     UserModule,
-    AuthModule],
+    AuthModule,
+    AccessControlModule],
   controllers: [AppController],
   providers: [AppService],
 })
