@@ -11,5 +11,8 @@ import { Role } from './entities/role.entity';
   ],
   controllers: [AccessControlController],
   providers: [AccessControlService],
+  exports:[
+    AccessControlService
+  ]
 })
 export class AccessControlModule {}

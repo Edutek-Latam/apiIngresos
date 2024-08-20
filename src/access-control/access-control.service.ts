@@ -4,6 +4,7 @@ import { Permission } from './entities/permission.entity';
 import { Repository } from 'typeorm';
 import { Role } from './entities/role.entity';
 import { CreatePermissionDTO } from './dto/create-permission.dto';
+import { CreateRoleDTO } from './dto/create-role.dto';
 
 @Injectable()
 export class AccessControlService {
@@ -25,5 +26,31 @@ export class AccessControlService {
         } catch (error) {
             console.error(error)
         }
+    }
+
+    async findAllPermission(){
+        return await this._permissionRepository.find();
+    }
+
+    async createRole(createRoleDTO: CreateRoleDTO){
+        const permissions = await this._permissionRepository.findByIds(createRoleDTO.permissionIds)
+        const role = await this._roleReporsitory.create({
+            ...createRoleDTO,
+            permissions
+        })
+
+        await this._roleReporsitory.save(role)
+        return role;
+    }
+
+    async findRole(id: string){
+        const role = await this._roleReporsitory.findOneBy( {id} )
+        return role
+    }
+    async findAllRole(){
+        return await this._roleReporsitory.createQueryBuilder('role')
+        .leftJoinAndSelect('role.permissions','permission')
+        .select(['role.id','role.name','role.description','role.isActive','permission.name','permission.description'])
+        .getMany()
     }
 }

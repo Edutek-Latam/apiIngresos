@@ -15,11 +15,12 @@ export class AuthService {
     
         const user = await this._userService.findOneByUsername(loginAuthDto.username);
         if(!user) throw new UnauthorizedException()
-
+          //console.log(user)
         if(user){
           const isValid = await comparePwd(loginAuthDto.password,user.password)
           if(isValid){
-            const payload = {username: user.username, isActive: user.isActive};
+           
+            const payload = {sub: user.id};
             const token =  await this.getToken(payload);
 
             return { access_token: token }

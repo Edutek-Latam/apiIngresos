@@ -1,6 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateUserDto } from './create-user.dto';
-import { IsString, MinLength, IsOptional, IsEmail, IsNumber } from 'class-validator';
+import { IsString, MinLength, IsOptional, IsEmail, IsNumber, IsUUID } from 'class-validator';
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
 
@@ -25,4 +25,8 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
     @IsOptional()
     @IsNumber()
     telefono:      number;
+
+    @IsOptional()
+    @IsUUID('4',{message:'El ID del rol debe de ser un  UUID valido'})
+    role: string;
 }

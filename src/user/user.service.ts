@@ -6,22 +6,29 @@ import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { resourceUsage } from 'process';
 import { encript } from 'src/common/utils/bcrypt';
+import { AccessControlService } from 'src/access-control/access-control.service';
 
 @Injectable()
 export class UserService {
 
   constructor(
     @InjectRepository(User) 
-    private _userRepository: Repository<User>
+    private _userRepository: Repository<User>,
+    private _accessControlService: AccessControlService
   ){}
 
   async create(createUserDto: CreateUserDto) {
     const password = encript(createUserDto.password);
     //console.log(password)
     try {
+      let role;
+    if(createUserDto.role){
+        role = await this.findRole(createUserDto.role)
+    }
       const newUser =  this._userRepository.create({
         ...createUserDto,
-        password
+        password, 
+        role
       });
       const user = await  this._userRepository.insert(newUser)
       return newUser
@@ -57,7 +64,7 @@ export class UserService {
     }) */
    const user = await this._userRepository
    .createQueryBuilder('user')
-   .select(['user.username'])
+   .select(['user.id','user.username'])
    .addSelect(['user.password'])
    .where({ username })
    .getOne()
@@ -67,11 +74,25 @@ export class UserService {
 
   }
 
+  async findOneFull(id: string){
+    const user = await this._userRepository.findOne({
+      where: { id },
+      relations: ['role','role.permissions']
+    })
+
+    return user;
+  }
   async update(id: string, updateUserDto: UpdateUserDto) {
    try {
+    let role;
+    if(updateUserDto.role){
+        role = await this.findRole(updateUserDto.role)
+    }
     const user = await this._userRepository.preload(
       {id,
-      ...updateUserDto,}
+      ...updateUserDto,
+        role
+    }
     )
 
     if(!user) throw new NotFoundException(`El usuario con id ${id} no existe`)
@@ -89,5 +110,14 @@ export class UserService {
 
     const removeUser = await this._userRepository.remove(user)
     return removeUser;
+  }
+
+  async findRole(id: string ){
+
+    const role = this._accessControlService.findRole(id)
+        if(!role) {
+          throw new NotFoundException()
+        }
+        return role
   }
 }
