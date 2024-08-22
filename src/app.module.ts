@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { AccessControlModule } from './access-control/access-control.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -19,9 +20,15 @@ import { AccessControlModule } from './access-control/access-control.module';
       ssl: true,
       synchronize: true,
       autoLoadEntities: true
-      
-      
     }),
+    ThrottlerModule.forRoot(
+      [
+        {
+          ttl:600,
+          limit:10
+        }
+      ]
+    ),
     UserModule,
     AuthModule,
     AccessControlModule],

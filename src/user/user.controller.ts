@@ -19,10 +19,16 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
-  @UseGuards(AuthGuard, PermissionGuard)
+  @Get('2FA/:id')
+  enable2FA(@Param('id',ParseUUIDPipe ) id: string){
+    return this.userService.enable2FA(id);
+  }
+
+ /*  @UseGuards(AuthGuard, PermissionGuard)
  // @Roles('SUPER_ADMIN')
   @Permissions('READ_USER')
-  @Get()
+  */
+  @Get() 
   findAll() {
     return this.userService.findAll();
   }

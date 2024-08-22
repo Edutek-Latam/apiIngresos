@@ -3,11 +3,15 @@ import { LoginDto } from './dto/login-auth.dto';
 import { UserService } from 'src/user/user.service';
 import { comparePwd } from 'src/common/utils/bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { Totp2FA, verifyOTP } from 'src/common/utils/totp';
+import { TotpDTO } from './dto/totp.dto';
 @Injectable()
 export class AuthService {
+  
   constructor(
     private _userService: UserService,
-    private _jwtService: JwtService
+    private _jwtService: JwtService,
+   
   ){}
 
 
@@ -32,6 +36,18 @@ export class AuthService {
 
    async getToken(payload: any){
       const token = await this._jwtService.signAsync(payload)
-      return token
+      return token 
+  }
+
+  /**
+   * 
+   * @param id 
+   * @param otp 
+   */
+  async verify2FA(totpDTO: TotpDTO){
+    const {id,otp} = totpDTO
+     const user = await this._userService.findOne( id )
+      const verify = await verifyOTP(user.secret, otp)
+      console.log(verify)
   }
 }

@@ -31,6 +31,9 @@ export class User {
     @Column({default: true,name:'is_active'})
     isActive: boolean
 
+    @Column({nullable: true})
+    secret: string;
+
     @ManyToOne(()=> Role, role => role.users,{eager: true, nullable: true})
     role: Role;
 

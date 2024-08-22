@@ -1,9 +1,10 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, InternalServerErrorException, Logger, UnauthorizedException } from '@nestjs/common';
 import { Request } from 'express';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 @Injectable()
 export class AuthGuard implements CanActivate {
+  private logger = new Logger(AuthGuard.name)
   constructor(
     private _jwtService: JwtService,
      private _userService: UserService
@@ -21,8 +22,13 @@ export class AuthGuard implements CanActivate {
       request.user = user;
 
     } catch (error) {
-      console.error(error)
-      throw new UnauthorizedException()
+      if(error instanceof TokenExpiredError){
+        const log = {name: error.name, message: error.message, expired: error.expiredAt}
+        this.logger.error(JSON.stringify(log))
+        throw new UnauthorizedException()
+      }
+      
+      throw new InternalServerErrorException()
     }
     return true;
   }

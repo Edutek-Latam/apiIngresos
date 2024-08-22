@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { resourceUsage } from 'process';
 import { encript } from 'src/common/utils/bcrypt';
 import { AccessControlService } from 'src/access-control/access-control.service';
+import { secondFA } from 'src/common/utils/totp';
 
 @Injectable()
 export class UserService {
@@ -48,6 +49,11 @@ export class UserService {
     return await this._userRepository.find();
   }
 
+  /**
+   * 
+   * @param id - ID del usuario
+   * @returns 
+   */
   async findOne(id: string) {
     const user = await this._userRepository.findOne( { 
       where: {id} 
@@ -102,6 +108,15 @@ export class UserService {
    } catch (error) {
     
    }
+  }
+
+  async enable2FA(id: string){
+      const user = await this.findOne(id);
+      if(!user) throw new BadRequestException();
+      const secretOtp = await secondFA(id,user.username);
+      const user2FA = await this._userRepository.update(id,{secret: secretOtp.secret })
+      return {qr: secretOtp.qr}
+
   }
 
   async remove(id: string) {
