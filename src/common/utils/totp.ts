@@ -13,17 +13,16 @@ export async function secondFA(id: string, username: string){
     const secret = speakeasy.generateSecret({length:30, name:'bytesec'})
     const otpauth_url = speakeasy.otpauthURL({
          secret: secret.base32,
+         encoding:'base32',
          issuer:'bytesec',
          label:`User:${username}`
     })
-
+    console.log(otpauth_url)
     const qr = await toDataURL(otpauth_url)
     return { secret: secret.base32,qr }
 }
 
 export function verifyOTP(secret: string, otp: string){
-    console.log(secret)
-    console.log(otp)
     let verify = speakeasy.totp.verify({
         secret: secret,
         encoding:'base32',

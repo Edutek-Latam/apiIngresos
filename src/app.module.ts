@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { AccessControlModule } from './access-control/access-control.module';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { RedisModule } from '@nestjs-modules/ioredis';
 
 @Module({
   imports: [
@@ -21,6 +22,10 @@ import { ThrottlerModule } from '@nestjs/throttler';
       synchronize: true,
       autoLoadEntities: true
     }),
+    RedisModule.forRoot({
+      type:'single',
+      url:process.env.URL_REDIS
+    }),
     ThrottlerModule.forRoot(
       [
         {
@@ -34,5 +39,6 @@ import { ThrottlerModule } from '@nestjs/throttler';
     AccessControlModule],
   controllers: [AppController],
   providers: [AppService],
+  exports:[RedisModule]
 })
 export class AppModule {}

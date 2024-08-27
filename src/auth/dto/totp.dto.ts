@@ -3,7 +3,7 @@ import { IsNumber, IsString, Length } from "class-validator";
 export class TotpDTO{
 
     @IsString()
-    id: string
+    secret: string
 
     @IsString()
     @Length(6)
