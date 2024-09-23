@@ -29,7 +29,7 @@ export class AccessControlService {
     }
 
     async findAllPermission(){
-        return await this._permissionRepository.find();
+        return await this._permissionRepository.find() ;
     }
 
     async createRole(createRoleDTO: CreateRoleDTO){

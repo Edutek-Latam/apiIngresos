@@ -14,7 +14,7 @@ export class AccessControlController {
 
   @Get('permission') //rotuer.get('access-control/permission')
   findAllPermission(){
-    return this.accessControlService.findAllPermission()
+    return  this.accessControlService.findAllPermission()
   }
 
 

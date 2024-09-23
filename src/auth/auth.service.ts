@@ -3,12 +3,11 @@ import { LoginDto } from './dto/login-auth.dto';
 import { UserService } from 'src/user/user.service';
 import { comparePwd } from 'src/common/utils/bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { Totp2FA, verifyOTP } from 'src/common/utils/totp';
+import { verifyOTP } from 'src/common/utils/totp';
 import { TotpDTO } from './dto/totp.dto';
 import { InjectRedis } from '@nestjs-modules/ioredis';
 import Redis from 'ioredis';
 import { v4 as uuid   } from 'uuid'
-import { access } from 'fs';
 
 @Injectable()
 export class AuthService {

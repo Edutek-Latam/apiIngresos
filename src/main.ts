@@ -9,6 +9,6 @@ async function bootstrap() {
     forbidNonWhitelisted: true,
     forbidUnknownValues: true
   }) )
-  await app.listen(3000);
+  await app.listen(3050);
 }
 bootstrap();
